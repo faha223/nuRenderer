@@ -1,0 +1,49 @@
+archive = tar
+compress = gzip
+library = renderer
+
+all: src x86 x64
+
+src: matrices.h libMatrix32.o libMatrix64.o vectorMath.h libVector32.o libMatrix64.o renderer.h renderer.cpp driver.cpp makefile
+	make clean
+	mkdir nuRenderer
+	cp libMatrix32.o nuRenderer/
+	cp libMatrix64.o nuRenderer/
+	cp libVector32.o nuRenderer/
+	cp libVector64.o nuRenderer/
+	cp matrices.h nuRenderer/
+	cp vectorMath.h nuRenderer/
+	cp renderer.h nuRenderer/
+	cp renderer.cpp nuRenderer/
+	cp driver.cpp nuRenderer/
+	cp makefile nuRenderer/
+	$(archive) -uvf $(library)_src.tar nuRenderer/*
+	$(compress) $(library)_src.tar
+	rm -R nuRenderer
+
+x86:
+	make x86
+	mkdir nuRenderer
+	cp libMatrix32.o nuRenderer/
+	cp libVector32.o nuRenderer/
+	cp libRenderer32.o nuRenderer/
+	cp driver32 nuRenderer/
+	$(archive) -uvf $(library)_x86.tar nuRenderer/*
+	$(compress) $(library)_x86.tar
+	rm -R nuRenderer
+
+x64:
+	make x64
+	mkdir nuRenderer
+	cp libMatrix64.o nuRenderer/
+	cp libVector64.o nuRenderer/
+	cp libRenderer64.o nuRenderer/
+	cp driver64 nuRenderer/
+	$(archive) -uvf $(library)_x86-64.tar nuRenderer/*
+	$(compress) $(library)_x86-64.tar
+	rm -R nuRenderer
+
+clean:
+	rm $(library)_src.tar.gz
+	rm $(library)_x86.tar.gz
+	rm $(library)_x86-64.tar.gz
